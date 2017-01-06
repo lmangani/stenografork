@@ -25,7 +25,7 @@
 export KILLCMD=/usr/bin/pkill
 export BINDIR="${BINDIR-/usr/bin}"
 export GOPATH=${HOME}/go
-export PATH=${PATH}/usr/local/go/bin
+export PATH=${PATH}:/usr/local/go/bin
 
 
 # Load support functions
@@ -59,17 +59,19 @@ install_packages () {
 }
 
 install_golang () {
-	local _url="https://storage.googleapis.com/golang/go1.4.2.linux-amd64.tar.gz"
+	local _url="https://storage.googleapis.com/golang/go1.6.3.linux-amd64.tar.gz"
 
 	if (! which go &>/dev/null ); then
 		Info "Installing golang ..."
-		cd /tmp
+		TMP="$(mktemp -d)"
+		pushd $TMP
 		curl -L -O -J -s $_url
 		sudo tar -C /usr/local -zxf $(basename $_url)
 		sudo tee /etc/profile.d/golang.sh >/dev/null << EOF
 pathmunge /usr/local/go/bin
 export GOPATH=\${HOME}/go
 EOF
+		popd
 	fi
 
 }
@@ -101,7 +103,7 @@ install_configs () {
 	Info "Setting up stenographer conf directory"
 	if [ ! -d /etc/stenographer/certs ]; then
 		sudo mkdir -p /etc/stenographer/certs
-		sudo chown -R stenographer:stenographer /etc/stenographer/certs
+		sudo chown -R root:root /etc/stenographer/certs
 	fi
 	if [ ! -f /etc/stenographer/config ]; then
 		sudo cp -vf configs/steno.conf /etc/stenographer/config
@@ -115,6 +117,11 @@ install_configs () {
 		Error "/etc/stenographer/config"
 		exit 1
 	fi
+}
+
+install_certs () {
+	cd $_scriptDir
+    sudo ./stenokeys.sh stenographer stenographer
 }
 
 install_service () {
@@ -195,14 +202,15 @@ start_service () {
 }
 
 check_sudo
-stop_processes
 install_packages
 install_golang
-install_jq
 add_accounts
-install_configs
-install_service
 build_stenographer
 build_stenotype
+install_jq
+install_configs
+install_certs
+install_service
 install_stenoread
+stop_processes
 start_service

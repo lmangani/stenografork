@@ -33,6 +33,7 @@ import (
 	"github.com/google/stenographer/base"
 	"github.com/google/stenographer/certs"
 	"github.com/google/stenographer/config"
+	"github.com/google/stenographer/filecache"
 	"github.com/google/stenographer/httputil"
 	"github.com/google/stenographer/query"
 	"github.com/google/stenographer/stats"
@@ -49,9 +50,9 @@ var (
 const (
 	fileSyncFrequency = 15 * time.Second
 
-	// These files will be generated in Config.CertPath.
-	clientCertFilename = "client_cert.pem"
-	clientKeyFilename  = "client_key.pem"
+	// These files will be read from Config.CertPath.
+	// Use stenokeys.sh to generate them.
+	caCertFilename     = "ca_cert.pem"
 	serverCertFilename = "server_cert.pem"
 	serverKeyFilename  = "server_key.pem"
 )
@@ -60,18 +61,7 @@ const (
 // requests.  This server will server over TLS, using the certs
 // stored in c.CertPath to verify itself to clients and verify clients.
 func (e *Env) Serve() error {
-	clientCert, clientKey, serverCert, serverKey :=
-		filepath.Join(e.conf.CertPath, clientCertFilename),
-		filepath.Join(e.conf.CertPath, clientKeyFilename),
-		filepath.Join(e.conf.CertPath, serverCertFilename),
-		filepath.Join(e.conf.CertPath, serverKeyFilename)
-	if err := certs.WriteNewCerts(clientCert, clientKey, false); err != nil {
-		return fmt.Errorf("cannot write client certs: %v", err)
-	}
-	if err := certs.WriteNewCerts(serverCert, serverKey, true); err != nil {
-		return fmt.Errorf("cannot write server certs: %v", err)
-	}
-	tlsConfig, err := certs.ClientVerifyingTLSConfig(clientCert)
+	tlsConfig, err := certs.ClientVerifyingTLSConfig(filepath.Join(e.conf.CertPath, caCertFilename))
 	if err != nil {
 		return fmt.Errorf("cannot verify client cert: %v", err)
 	}
@@ -79,27 +69,38 @@ func (e *Env) Serve() error {
 		Addr:      fmt.Sprintf("%s:%d", e.conf.Host, e.conf.Port),
 		TLSConfig: tlsConfig,
 	}
-	http.HandleFunc("/query", func(w http.ResponseWriter, r *http.Request) {
-		w = httputil.Log(w, r, true)
-		defer log.Print(w)
-		queryBytes, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			http.Error(w, "could not read request body", http.StatusBadRequest)
-			return
-		}
-		q, err := query.NewQuery(string(queryBytes))
-		if err != nil {
-			http.Error(w, "could not parse query", http.StatusBadRequest)
-			return
-		}
-		ctx, cancel := httputil.Context(w, r, time.Minute*15)
-		defer cancel()
-		packets := e.Lookup(ctx, q)
-		w.Header().Set("Content-Type", "appliation/octet-stream")
-		base.PacketsToFile(packets, w)
-	})
+	http.HandleFunc("/query", e.handleQuery)
 	http.Handle("/debug/stats", stats.S)
-	return server.ListenAndServeTLS(serverCert, serverKey)
+	return server.ListenAndServeTLS(
+		filepath.Join(e.conf.CertPath, serverCertFilename),
+		filepath.Join(e.conf.CertPath, serverKeyFilename))
+}
+
+func (e *Env) handleQuery(w http.ResponseWriter, r *http.Request) {
+	w = httputil.Log(w, r, true)
+	defer log.Print(w)
+
+	limit, err := base.LimitFromHeaders(r.Header)
+	if err != nil {
+		http.Error(w, "Invalid Limit Headers", http.StatusBadRequest)
+		return
+	}
+
+	queryBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "could not read request body", http.StatusBadRequest)
+		return
+	}
+	q, err := query.NewQuery(string(queryBytes))
+	if err != nil {
+		http.Error(w, "could not parse query", http.StatusBadRequest)
+		return
+	}
+	ctx := httputil.Context(w, r, time.Minute*15)
+	defer ctx.Cancel()
+	packets := e.Lookup(ctx, q)
+	w.Header().Set("Content-Type", "appliation/octet-stream")
+	base.PacketsToFile(packets, w, limit)
 }
 
 // New returns a new Env for use in running Stenotype.
@@ -117,7 +118,7 @@ func New(c config.Config) (_ *Env, returnedErr error) {
 			os.RemoveAll(dirname)
 		}
 	}()
-	threads, err := thread.Threads(c.Threads, dirname)
+	threads, err := thread.Threads(c.Threads, dirname, filecache.NewCache(c.MaxOpenFiles))
 	if err != nil {
 		return nil, err
 	}
@@ -154,6 +155,7 @@ type Env struct {
 	name    string
 	threads []*thread.Thread
 	done    chan bool
+	fc      *filecache.Cache
 	// StenotypeOutput is the writer that stenotype STDOUT/STDERR will be
 	// redirected to.
 	StenotypeOutput io.Writer

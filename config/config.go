@@ -22,7 +22,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net"
-	"os"
 
 	"github.com/google/stenographer/base"
 )
@@ -34,6 +33,8 @@ const (
 	// By default, ext3 has issues with >32k files, so we go for something less
 	// than that.
 	defaultMaxDirectoryFiles = 30000
+
+	defaultMaxOpenFiles = 100000
 )
 
 // ThreadConfig is a json-decoded configuration for each stenotype thread,
@@ -55,6 +56,7 @@ type Config struct {
 	Port          int
 	Host          string // Location to listen.
 	CertPath      string // Directory where client and server certs are stored.
+	MaxOpenFiles  int    // Max number of file descriptors opened at once
 }
 
 // ReadConfigFile reads in the given JSON encoded configuration file and returns
@@ -70,6 +72,9 @@ func ReadConfigFile(filename string) (*Config, error) {
 	if err := dec.Decode(&out); err != nil {
 		return nil, fmt.Errorf("could not decode config file %q: %v", filename, err)
 	}
+	if out.MaxOpenFiles <= 0 {
+		out.MaxOpenFiles = defaultMaxOpenFiles
+	}
 	for i, thread := range out.Threads {
 		if thread.DiskFreePercentage <= 0 {
 			out.Threads[i].DiskFreePercentage = defaultDiskSpacePercentage
@@ -83,12 +88,12 @@ func ReadConfigFile(filename string) (*Config, error) {
 
 // Validate checks the configuration for common errors.
 func (c Config) Validate() error {
-	for _, thread := range c.Threads {
-		if _, err := os.Stat(thread.PacketsDirectory); err != nil {
-			return fmt.Errorf("invalid packets directory %q in configuration: %v", thread.PacketsDirectory, err)
+	for n, thread := range c.Threads {
+		if thread.PacketsDirectory == "" {
+			return fmt.Errorf("No packet directory specified for thread %d in configuration", n)
 		}
-		if _, err := os.Stat(thread.IndexDirectory); err != nil {
-			return fmt.Errorf("invalid index directory %q in configuration: %v", thread.IndexDirectory, err)
+		if thread.IndexDirectory == "" {
+			return fmt.Errorf("No index directory specified for thread %d in configuration", n)
 		}
 	}
 

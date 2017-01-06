@@ -20,13 +20,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
 	"sync"
 	"time"
 	"unsafe"
 
 	"github.com/google/gopacket"
 	"github.com/google/stenographer/base"
+	"github.com/google/stenographer/filecache"
 	"github.com/google/stenographer/indexfile"
 	"github.com/google/stenographer/query"
 	"github.com/google/stenographer/stats"
@@ -49,7 +49,7 @@ var (
 // associated index.
 type BlockFile struct {
 	name string
-	f    *os.File
+	f    *filecache.CachedFile
 	i    *indexfile.IndexFile
 	mu   sync.RWMutex // Stops Close() from invalidating a file before a current query is done with it.
 	done chan struct{}
@@ -57,19 +57,14 @@ type BlockFile struct {
 
 // NewBlockFile opens up a named block file (and its index), returning a handle
 // which can be used to look up packets.
-func NewBlockFile(filename string) (*BlockFile, error) {
+func NewBlockFile(filename string, fc *filecache.Cache) (*BlockFile, error) {
 	v(1, "Blockfile opening: %q", filename)
-	f, err := os.Open(filename)
+	i, err := indexfile.NewIndexFile(indexfile.IndexPathFromBlockfilePath(filename), fc)
 	if err != nil {
-		return nil, fmt.Errorf("could not open %q: %v", filename, err)
-	}
-	i, err := indexfile.NewIndexFile(indexfile.IndexPathFromBlockfilePath(filename))
-	if err != nil {
-		f.Close()
 		return nil, fmt.Errorf("could not open index for %q: %v", filename, err)
 	}
 	return &BlockFile{
-		f:    f,
+		f:    fc.Open(filename),
 		i:    i,
 		name: filename,
 		done: make(chan struct{}),
@@ -125,7 +120,7 @@ func (b *BlockFile) Close() (err error) {
 // allPacketsIter implements Iter.
 type allPacketsIter struct {
 	*BlockFile
-	blockData        [1 << 20]byte
+	blockData        []byte
 	block            *C.struct_tpacket_hdr_v1
 	pkt              *C.struct_tpacket3_hdr
 	blockPacketsRead int
@@ -142,6 +137,7 @@ func (a *allPacketsIter) Next() bool {
 	}
 	for a.block == nil || a.blockPacketsRead == int(a.block.num_pkts) {
 		packetBlocksRead.Increment()
+		a.blockData = make([]byte, 1<<20)
 		_, err := a.f.ReadAt(a.blockData[:], a.blockOffset)
 		if err == io.EOF {
 			a.done = true
@@ -224,7 +220,7 @@ func (b *BlockFile) Lookup(ctx context.Context, q query.Query, out *base.PacketC
 	defer b.mu.RUnlock()
 
 	var ci gopacket.CaptureInfo
-	v(2, "Blockfile %q looking up query %q", q.String(), b.name)
+	v(2, "Blockfile %q looking up query %q", b.name, q.String())
 	start := time.Now()
 	positions, err := b.positionsLocked(ctx, q)
 	if err != nil {
