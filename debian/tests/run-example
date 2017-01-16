@@ -1,0 +1,34 @@
+#!/bin/sh
+# autopkgtest: Basic functionality test for Stenographer
+# Author: Sascha Steinbiss <satta@debian.org>
+set -e
+
+# make sure syslog service is running
+systemctl start rsyslog
+
+# tap Internet-connected interface
+IFACE=$(route -n | egrep '^0.0.0.0' | awk '{print $8}')
+sed -i "s/\"Interface\": \"eth0\"/\"Interface\": \"$IFACE\"/g" /etc/stenographer/config
+
+# tweak settings to be more reasonable with memory for small test case
+sed -i 's/"Flags": \[\]/"Flags": ["--blocks=256"]/g' /etc/stenographer/config
+
+# start stenographer
+systemctl start stenographer
+
+# check whether stenographer started up
+systemctl is-active stenographer
+
+# generate some traffic by randomly downloading stuff
+curl 'http://www.debian.org' > /dev/null
+
+# we need to wait a bit until packets appear in output, see
+# https://github.com/google/stenographer/blob/master/DESIGN.md#packets-dont-show-up-immediately
+sleep 180
+
+# query caps
+useradd -g users -G stenographer -m testuser
+su testuser -c "stenoread 'after 5m ago'"
+
+# goodbye
+systemctl stop stenographer

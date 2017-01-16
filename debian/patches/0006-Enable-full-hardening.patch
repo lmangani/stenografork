@@ -1,0 +1,41 @@
+Description: Try to enable full hardening on Stenographer executables
+Author: Sascha Steinbiss <satta@debian.org>
+--- a/stenotype/Makefile
++++ b/stenotype/Makefile
+@@ -53,13 +53,13 @@
+ SANITIZE=
+ ifndef SANITIZE
+ 	OBJECTS=$(foreach file,$(FILES),$(file)_gcc.o)
+-	CFLAGS=$(SHARED_CFLAGS) $(GCC_CFLAGS)
+-	LDFLAGS=$(SHARED_LDFLAGS) $(GCC_LDFLAGS)
++	CFLAGS:=$(CFLAGS) $(SHARED_CFLAGS) $(GCC_CFLAGS)
++	LDFLAGS:=$(LDFLAGS) $(SHARED_LDFLAGS) $(GCC_LDFLAGS)
+ 	CC=$(GCC)
+ else
+ 	OBJECTS=$(foreach file,$(FILES),$(file)_$(SANITIZE)_clang.o)
+-	CFLAGS=$(SHARED_CFLAGS) $(CLANG_CFLAGS) -fsanitize=$(SANITIZE)
+-	LDFLAGS=$(SHARED_LDFLAGS) $(CLANG_LDFLAGS)
++	CFLAGS:=$(CFLAGS) $(SHARED_CFLAGS) $(CLANG_CFLAGS) -fsanitize=$(SANITIZE)
++	LDFLAGS:=$(LDFLAGS) $(SHARED_LDFLAGS) $(CLANG_LDFLAGS)
+ 	CC=$(CLANG)
+ endif
+ ifeq "$(SANITIZE)" "memory"
+@@ -77,15 +77,15 @@
+ 
+ # Generate g++ object files.
+ %_gcc.o: %.cc $(DEPS)
+-	$(GCC) $(CFLAGS) -c -o $@ $<
++	$(GCC) $(CFLAGS) $(CPPFLAGS) $(SHARED_CFLAGS) -c -o $@ $<
+ 
+ # Generate clang object files.
+ %_$(SANITIZE)_clang.o: %.cc $(DEPS)
+-	$(CLANG) $(CFLAGS) -c -o $@ $<
++	$(CLANG) $(CFLAGS) $(CPPFLAGS) $(SHARED_CFLAGS) -c -o $@ $<
+ 
+ # Generate the stenotype binary itself.  You mostly want this :)
+ stenotype: $(OBJECTS)
+-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
++	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
+ 
+ 
+ 

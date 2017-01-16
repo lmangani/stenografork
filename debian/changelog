@@ -1,0 +1,6 @@
+stenographer (0.0~git20161206.0.66a8e7e-1) unstable; urgency=low
+
+  [ Hilko Bengen and Sascha Steinbiss ]
+  * Initial release (Closes: #795101)
+
+ -- Sascha Steinbiss <satta@debian.org>  Mon, 16 Jan 2017 14:37:44 +0100
