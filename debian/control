@@ -6,7 +6,7 @@ Uploaders: Sascha Steinbiss <satta@debian.org>
 Build-Depends: debhelper (>= 9),
  dh-golang,
  debhelper (>= 10.1~) | dh-systemd,
- golang-go,
+ golang-go (>= 2:1.6.1),
  golang-github-golang-leveldb-dev,
  golang-github-google-gopacket-dev,
  golang-golang-x-net-dev,

@@ -1,6 +1,7 @@
 stenographer (0.0~git20161206.0.66a8e7e-1~bpo8+1) jessie-backports; urgency=medium
 
   * Rebuild for jessie-backports.
+  * Require at least Go 1.6 (earlier versions would run into SSL weirdness).
 
  -- Sascha Steinbiss <satta@debian.org>  Thu, 19 Jan 2017 16:22:08 +0100
 
