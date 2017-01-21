@@ -46,7 +46,7 @@ Description: full-packet-capture utility -- clients
 
 Package: stenographer-common
 Architecture: all
-Depends: ${misc:Depends}, adduser, libcap2-bin, openssl
+Depends: ${misc:Depends}, adduser, libcap2-bin, openssl, jq
 Description: full-packet-capture utility -- common files
  Stenographer is a full-packet-capture utility for buffering packets
  to disk for intrusion detection and incident response purposes. It
