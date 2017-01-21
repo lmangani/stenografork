@@ -1,3 +1,4 @@
+use-randfile.patch
 0002-Make-steno.conf-usable-for-Debian-package.patch
 0006-Enable-full-hardening.patch
 0007-Fix-spelling.patch
