@@ -1,8 +1,16 @@
-Description: Minor spelling fixes
-Author: Sascha Steinbiss <satta@debian.org>
+From: Sascha Steinbiss <satta@debian.org>
+Date: Mon, 23 Jan 2017 23:42:09 +0000
+Subject: Fix spelling
+
+---
+ stenotype/stenotype.cc | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/stenotype/stenotype.cc b/stenotype/stenotype.cc
+index 1fbdd61..c5b182d 100644
 --- a/stenotype/stenotype.cc
 +++ b/stenotype/stenotype.cc
-@@ -235,7 +235,7 @@
+@@ -235,7 +235,7 @@ void DropPrivileges() {
      if (flag_gid == "") {
        flag_gid = "nogroup";
      }
@@ -11,7 +19,7 @@ Author: Sascha Steinbiss <satta@debian.org>
                << flag_gid;
      auto group = getgrnam(flag_gid.c_str());
      CHECK(group != NULL) << "Unable to get info for group " << flag_gid;
-@@ -247,7 +247,7 @@
+@@ -247,7 +247,7 @@ void DropPrivileges() {
      if (flag_uid == "") {
        flag_uid = "nobody";
      }

@@ -2,6 +2,7 @@ stenographer (0.0~git20161206.0.66a8e7e-4) unstable; urgency=medium
 
   * Split dh_install override into arch and indep variants.
     Closes: #852348
+  * Clean up patches.
 
  -- Sascha Steinbiss <satta@debian.org>  Mon, 23 Jan 2017 23:34:00 +0000
 

@@ -1,8 +1,16 @@
-Description: Try to enable full hardening on Stenographer executables
-Author: Sascha Steinbiss <satta@debian.org>
+From: Sascha Steinbiss <satta@debian.org>
+Date: Mon, 23 Jan 2017 23:42:09 +0000
+Subject: Enable full hardening
+
+---
+ stenotype/Makefile | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/stenotype/Makefile b/stenotype/Makefile
+index 1f96db5..cee501f 100644
 --- a/stenotype/Makefile
 +++ b/stenotype/Makefile
-@@ -53,13 +53,13 @@
+@@ -53,13 +53,13 @@ FUZZ_FILES=util index index_bin
  SANITIZE=
  ifndef SANITIZE
  	OBJECTS=$(foreach file,$(FILES),$(file)_gcc.o)
@@ -20,7 +28,7 @@ Author: Sascha Steinbiss <satta@debian.org>
  	CC=$(CLANG)
  endif
  ifeq "$(SANITIZE)" "memory"
-@@ -77,15 +77,15 @@
+@@ -77,15 +77,15 @@ clean:
  
  # Generate g++ object files.
  %_gcc.o: %.cc $(DEPS)
