@@ -46,7 +46,7 @@ override_dh_installman: $(MANPAGES)
 override_dh_install:
 	cp stenokeys.sh stenokeys
 	dh_install --fail-missing -X/usr/share/gocode/src
-	install -m644 configs/steno.conf \
+	install -D -m644 configs/steno.conf \
 		debian/stenographer-common/etc/stenographer/config
 	install -D -m644 configs/limits.conf \
 		debian/stenographer-common/etc/security/limits.d/stenographer.conf

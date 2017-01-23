@@ -1,3 +1,18 @@
+stenographer (0.0~git20161206.0.66a8e7e-3) unstable; urgency=medium
+
+  * Add missing dependency on jq for stenographer-common.
+    Apparently stenokeys requires it, as noticed by piuparts.
+  * Make stenokeys.sh use /dev/urandom as RANDFILE to avoid
+    creation of /root/.rnd after calling openssl.
+
+ -- Sascha Steinbiss <satta@debian.org>  Sat, 21 Jan 2017 16:10:23 +0000
+
+stenographer (0.0~git20161206.0.66a8e7e-2) unstable; urgency=medium
+
+  * Fix builds on buildds by making sure directories are created.
+
+ -- Sascha Steinbiss <satta@debian.org>  Fri, 20 Jan 2017 17:28:19 +0100
+
 stenographer (0.0~git20161206.0.66a8e7e-1~bpo8+1) jessie-backports; urgency=medium
 
   * Rebuild for jessie-backports.
