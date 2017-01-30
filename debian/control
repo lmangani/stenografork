@@ -21,7 +21,7 @@ Vcs-Browser: https://anonscm.debian.org/cgit/pkg-go/packages/stenographer.git
 Vcs-Git: https://anonscm.debian.org/git/pkg-go/packages/stenographer.git
 
 Package: stenographer
-Architecture: any
+Architecture: amd64 arm64 armel armhf i386 mips mips64el mipsel ppc64el s390x alpha hppa hurd-i386 kfreebsd-amd64 kfreebsd-i386 m68k powerpc powerpcspe sh4 sparc64 x32
 Depends: ${shlibs:Depends}, ${misc:Depends}, stenographer-common, lsb-base (>=3.0-6)
 Recommends: stenographer-client
 Description: full-packet-capture utility -- server
