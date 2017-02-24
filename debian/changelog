@@ -1,4 +1,4 @@
-stenographer (0.0~git20161206.0.66a8e7e-5) UNRELEASED; urgency=medium
+stenographer (0.0~git20161206.0.66a8e7e-5) unstable; urgency=medium
 
   * Remove ppc64 from list of supported archs.
     https://lists.alioth.debian.org/pipermail/pkg-go-maintainers/Week-of-Mon-20170123/010368.html
