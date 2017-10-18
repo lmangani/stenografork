@@ -7,7 +7,7 @@ set -e
 systemctl start rsyslog
 
 # tap Internet-connected interface
-IFACE=$(route -n | egrep '^0.0.0.0' | awk '{print $8}')
+IFACE=$(route -n | egrep '^0.0.0.0' | awk '{print $8; exit}')
 sed -i "s/\"Interface\": \"eth0\"/\"Interface\": \"$IFACE\"/g" /etc/stenographer/config
 
 # tweak settings to be more reasonable with memory for small test case
