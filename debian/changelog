@@ -2,6 +2,7 @@ stenographer (0.0~git20161206.0.66a8e7e-6) unstable; urgency=medium
 
   * Fix autopkgtest for the case where there is more than one default route.
     Thanks to Steve Langasek for the patch from Ubuntu.
+    Closes: #876713
 
  -- Sascha Steinbiss <satta@debian.org>  Wed, 18 Oct 2017 22:47:52 +0100
 
