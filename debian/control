@@ -3,9 +3,8 @@ Section: net
 Priority: optional
 Maintainer: Hilko Bengen <bengen@debian.org>
 Uploaders: Sascha Steinbiss <satta@debian.org>
-Build-Depends: debhelper (>= 9),
+Build-Depends: debhelper (>= 10.1~),
  dh-golang,
- debhelper (>= 10.1~),
  golang-go,
  golang-github-golang-leveldb-dev,
  golang-github-google-gopacket-dev,
