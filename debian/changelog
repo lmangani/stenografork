@@ -1,3 +1,9 @@
+stenographer (0.0~git20161206.0.66a8e7e-9) UNRELEASED; urgency=medium
+
+  * Point Vcs-* urls to salsa.debian.org.
+
+ -- Alexandre Viau <aviau@debian.org>  Mon, 02 Apr 2018 23:50:36 -0400
+
 stenographer (0.0~git20161206.0.66a8e7e-8) unstable; urgency=medium
 
   * Team upload.
