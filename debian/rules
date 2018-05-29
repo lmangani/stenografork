@@ -13,7 +13,7 @@ MANPAGES=debian/man/stenocurl.1 \
          debian/man/stenokeys.1
 
 %:
-	dh $@ --buildsystem=golang --with=golang,systemd --parallel
+	dh $@ --buildsystem=golang --with=golang
 
 %.1: %.1.txt
 	TZ=UTC LC_ALL=C \
