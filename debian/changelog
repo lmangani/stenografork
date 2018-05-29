@@ -9,6 +9,7 @@ stenographer (0.0~git20161206.0.66a8e7e-9) unstable; urgency=medium
     have their own docs.
     Closes: #898232
   * Use debhelper 11.
+  * Bump Standards-Version.
 
  -- Sascha Steinbiss <satta@debian.org>  Tue, 29 May 2018 16:10:47 +0200
 
