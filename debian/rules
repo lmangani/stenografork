@@ -54,11 +54,6 @@ override_dh_install-indep:
 	install -D -m644 configs/limits.conf \
 		debian/stenographer-common/etc/security/limits.d/stenographer.conf
 
-override_dh_installdocs:
-	dh_installdocs -pstenographer-common
-	dh_installdocs -pstenographer --link-doc=stenographer-common
-	dh_installdocs -pstenographer-client --link-doc=stenographer-common
-
 override_dh_systemd_enable:
 	# Do not start stenographer by default.
 	# The user should start it only after making sure the configuration is

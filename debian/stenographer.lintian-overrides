@@ -1,3 +1,5 @@
 # we ship a systemd unit file
 stenographer: init.d-script-not-marked-as-conffile etc/init.d/stenographer
 stenographer: init.d-script-not-included-in-package etc/init.d/stenographer
+# Having this installed is still useful for users
+stenographer: package-contains-upstream-install-documentation usr/share/doc/stenographer/INSTALL.md.gz

@@ -1,8 +1,15 @@
-stenographer (0.0~git20161206.0.66a8e7e-9) UNRELEASED; urgency=medium
+stenographer (0.0~git20161206.0.66a8e7e-9) unstable; urgency=medium
 
+  [ Alexandre Viau ]
   * Point Vcs-* urls to salsa.debian.org.
 
- -- Alexandre Viau <aviau@debian.org>  Mon, 02 Apr 2018 23:50:36 -0400
+  [ Sascha Steinbiss ]
+  * Make stenographer binnmu-safe by not using link-doc between
+    arch-dependent and arch-all packages, instead letting each package
+    have their own docs.
+    Closes: #898232
+
+ -- Sascha Steinbiss <satta@debian.org>  Tue, 29 May 2018 16:10:47 +0200
 
 stenographer (0.0~git20161206.0.66a8e7e-8) unstable; urgency=medium
 
