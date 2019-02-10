@@ -188,8 +188,8 @@ func (t *Thread) cleanUpOnLowDiskSpace() {
 	for {
 		fido.Reset(time.Minute)
 		if len(t.files) > t.conf.MaxDirectoryFiles {
-			v(1, "Thread %v too many files. %d > %d, deleting", t.id, len(t.files), t.conf.MaxDirectoryFiles)
-			t.deleteOldestThreadFiles(len(t.files) - t.conf.MaxDirectoryFiles)
+			v(1, "Thread %v has too many files. %d > %d, deleting", t.id, len(t.files), t.conf.MaxDirectoryFiles)
+			t.deleteOldestThreadFiles(len(t.files)-t.conf.MaxDirectoryFiles, nil)
 			continue
 		}
 		df, err := base.PathDiskFreePercentage(t.packetPath)
@@ -198,11 +198,12 @@ func (t *Thread) cleanUpOnLowDiskSpace() {
 			return
 		}
 		if df > t.conf.DiskFreePercentage {
-			v(1, "Thread %v disk space is sufficient: %v > %v", t.id, df, t.conf.DiskFreePercentage)
+			v(1, "Thread %v disk space is sufficient (packet path=%q): %d%% free > %d%% threshold", t.id, t.packetPath, df, t.conf.DiskFreePercentage)
 			return
 		}
-		v(0, "Thread %v disk usage is high (packet path=%q): %d%% < %d%% free\n", t.id, t.packetPath, df, t.conf.DiskFreePercentage)
-		t.deleteOldestThreadFiles(1)
+		v(0, "Thread %v disk usage is high (packet path=%q): %d%% free <= %d%% threshold", t.id, t.packetPath, df, t.conf.DiskFreePercentage)
+		// Delete enough files to match newest file size.
+		t.pruneOldestThreadFiles()
 		// After deleting files, it may take a while for disk stats to be updated.
 		// We add this sleep so we don't accidentally delete WAY more files than
 		// we need to.
@@ -217,11 +218,46 @@ func tryToDeleteFile(filename string) {
 	}
 }
 
-// deleteOldestThreadFile deletes the single oldest file held by this thread.
+// pruneOldestThreadFiles deletes enough of the oldest files held by this
+// thread to free up bytes >= the size of the newest file.
+// It should only exceed the newest size by no more than the size of the last
+// deleted file.
 // It should only be called if the thread has at least one file (should be
 // checked by the caller beforehand).
-func (t *Thread) deleteOldestThreadFiles(n int) {
+func (t *Thread) pruneOldestThreadFiles() {
 	files := t.getSortedFiles()
+	v(2, "pruneOldestThreadFiles - files count %v, t.files count %v", len(files), len(t.files))
+	if len(files) == 0 || len(t.files) == 0 {
+		return
+	}
+	firstName := files[len(files)-1]
+	v(3, "pruneOldestThreadFiles - firstName %v", firstName)
+	if len(firstName) == 0 {
+		return
+	}
+	firstSize := t.files[firstName].Size()
+	v(3, "pruneOldestThreadFiles - firstSize %v", firstSize)
+	var delSize int64
+	delCnt := 0
+	for delSize <= firstSize && delCnt < len(files) {
+		v(3, "pruneOldestThreadFiles - size loop - delCnt %v, len(files) %v", delCnt, len(files))
+		bf := t.files[files[delCnt]]
+		v(3, "pruneOldestThreadFiles - size loop - bf %v", bf)
+		delSize += bf.Size()
+		delCnt++
+	}
+	v(1, "Thread %v deleting %v files to free up %v bytes.", t.id, delCnt, delSize)
+	t.deleteOldestThreadFiles(delCnt, files)
+}
+
+// deleteOldestThreadFiles deletes n of the oldest files held by this thread.
+// It should only be called if the thread has at least one file (should be
+// checked by the caller beforehand).
+// The list of sorted files can be passed if it has already been generated.
+func (t *Thread) deleteOldestThreadFiles(n int, files []string) {
+	if files == nil {
+		files = t.getSortedFiles()
+	}
 	for i := 0; i < n && i < len(files); i++ {
 		toDelete := files[i]
 		v(1, "Thread %v removing %q", t.id, toDelete)
@@ -236,7 +272,7 @@ func (t *Thread) deleteOldestThreadFiles(n int) {
 	}
 }
 
-// getSortedFiles returns files frm the thread in the order they were created,
+// getSortedFiles returns files from the thread in the order they were created,
 // and thus in the order their packets should appear.
 //
 // This method should only be called once the t.mu has been acquired!
@@ -245,8 +281,24 @@ func (t *Thread) getSortedFiles() []string {
 	for name := range t.files {
 		sortedFiles = append(sortedFiles, name)
 	}
+	// We guarantee elsewhere that filename ordering corresponds to creation ordering
 	sort.Strings(sortedFiles)
 	return sortedFiles
+}
+
+// OldestFileTimestamp returns timestamp of the oldest file we have.
+func (t *Thread) OldestFileTimestamp() time.Time {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	files := t.getSortedFiles()
+	if len(files) == 0 {
+		return time.Time{}
+	}
+	ts, err := strconv.ParseInt(files[0], 10, 64)
+	if err != nil {
+		return time.Time{}
+	}
+	return time.Unix(0, ts*1000 /* micros to nanos */)
 }
 
 // This method should only be called once the t.mu has been acquired!
