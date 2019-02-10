@@ -99,7 +99,7 @@ func (e *Env) handleQuery(w http.ResponseWriter, r *http.Request) {
 	ctx := httputil.Context(w, r, time.Minute*15)
 	defer ctx.Cancel()
 	packets := e.Lookup(ctx, q)
-	w.Header().Set("Content-Type", "appliation/octet-stream")
+	w.Header().Set("Content-Type", "application/octet-stream")
 	base.PacketsToFile(packets, w, limit)
 }
 
@@ -287,6 +287,19 @@ func (d *Env) ExportDebugHandlers(mux *http.ServeMux) {
 	for _, thread := range d.threads {
 		thread.ExportDebugHandlers(mux)
 	}
+	oldestTimestamp := stats.S.Get("oldest_timestamp")
+	go func() {
+		for c := time.Tick(time.Second * 10); ; <-c {
+			t := time.Unix(0, 0)
+			for _, thread := range d.threads {
+				ts := thread.OldestFileTimestamp()
+				if ts.After(t) {
+					t = ts
+				}
+			}
+			oldestTimestamp.Set(t.UnixNano())
+		}
+	}()
 }
 
 // MinLastFileSeen returns the timestamp of the oldest among the newest files

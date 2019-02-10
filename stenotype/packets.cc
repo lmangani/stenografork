@@ -26,6 +26,7 @@
 #include <sys/mman.h>         // mmap(), munmap()
 #include <sys/socket.h>       // socket()
 #include <unistd.h>           // close(), getpid()
+#include <sys/ioctl.h>        // ioctl()
 
 #include <memory>
 #include <string>
@@ -185,7 +186,7 @@ void TestimonyPackets::TReturnToKernel(struct tpacket_block_desc* block,
 }
 
 Error TestimonyPackets::NextBlock(Block* b, int poll_millis) {
-  struct tpacket_block_desc* block;
+  const struct tpacket_block_desc* block;
   CHECK_SUCCESS(NegErrno(testimony_get_block(t_, poll_millis, &block)));
   if (block == NULL) {
     return SUCCESS;
@@ -224,6 +225,24 @@ Error PacketsV3::Builder::Bind(const std::string& iface, Packets** out) {
   if (ifindex == 0) {
     return Errno();
   }
+  if (promisc_) {
+    VLOG(1) << "Setting promiscuous mode for " << iface;
+    struct ifreq ifopts;
+    memset(&ifopts, 0, sizeof(ifopts));
+    strncpy(ifopts.ifr_name, iface.c_str(), IFNAMSIZ-1);
+    RETURN_IF_ERROR(
+        Errno(ioctl(state_.fd, SIOCGIFFLAGS, &ifopts)),
+        "getting current interface flags");
+    if (ifopts.ifr_flags & IFF_PROMISC) {
+      VLOG(1) << "Interface " << iface << " already in promisc mode";
+    } else {
+      ifopts.ifr_flags |= IFF_PROMISC;
+      RETURN_IF_ERROR(
+          Errno(ioctl(state_.fd, SIOCSIFFLAGS, &ifopts)),
+          "turning on promisc");
+    }
+  }
+
   struct sockaddr_ll ll;
   memset(&ll, 0, sizeof(ll));
   ll.sll_family = AF_PACKET;
@@ -303,6 +322,11 @@ Error PacketsV3::Builder::SetFanout(uint16_t fanout_type, uint16_t fanout_id) {
   fanout_ = fanout_type;
   fanout_ <<= 16;
   fanout_ |= fanout_id;
+  return SUCCESS;
+}
+
+Error PacketsV3::Builder::SetPromisc(bool promisc) {
+  promisc_ = promisc;
   return SUCCESS;
 }
 

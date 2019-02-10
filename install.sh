@@ -66,10 +66,20 @@ if [ ! -f /etc/security/limits.d/stenographer.conf ]; then
   sudo cp -v configs/limits.conf /etc/security/limits.d/stenographer.conf
 fi
 
-if [ ! -f /etc/init/stenographer.conf ]; then
-  Info "Setting up stenographer upstart config"
-  sudo cp -v configs/upstart.conf /etc/init/stenographer.conf
-  sudo chmod 0644 /etc/init/stenographer.conf
+if [ -d /etc/init/ ]; then
+  if [ ! -f /etc/init/stenographer.conf ]; then
+    Info "Setting up stenographer upstart config"
+    sudo cp -v configs/upstart.conf /etc/init/stenographer.conf
+    sudo chmod 0644 /etc/init/stenographer.conf
+  fi
+fi
+
+if [ -d /lib/systemd/system/ ]; then
+  if [ ! -f /lib/systemd/system/stenographer.service ]; then
+    Info "Setting up stenographer systemd config"
+    sudo cp -v configs/systemd.conf /lib/systemd/system/stenographer.service
+    sudo chmod 644 /lib/systemd/system/stenographer.service
+  fi
 fi
 
 if [ ! -d /etc/stenographer/certs ]; then
@@ -86,7 +96,8 @@ fi
 
 if grep -q /path/to /etc/stenographer/config; then
   Error "Create directories to output packets/indexes to, then update"
-  Error "/etc/stenographer/config to point to them"
+  Error "/etc/stenographer/config to point to them."
+  Error "Directories should be owned by stenographer:stenographer."
   exit 1
 fi
 

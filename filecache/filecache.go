@@ -96,7 +96,7 @@ func (cf *CachedFile) readLockedFile() error {
 		}
 		cf.mu.RUnlock()
 		if err := cf.openFile(); err != nil {
-			return fmt.Errorf("lazily opening %q: %v", err)
+			return fmt.Errorf("lazily opening: %v", err)
 		}
 	}
 }
@@ -180,6 +180,7 @@ func (cf *CachedFile) closeFile() error {
 	}
 	v(2, "Closing %q", cf.filename)
 	cf.cache.opened--
+	f := cf.f
 	cf.f = nil
-	return cf.f.Close()
+	return f.Close()
 }
