@@ -29,7 +29,6 @@ import (
 	"github.com/google/stenographer/base"
 	"github.com/google/stenographer/config"
 	"github.com/google/stenographer/env"
-        "github.com/google/stenographer/rpc"
 
 	_ "net/http/pprof" // server debugging info in /debug/pprof/*
 )
@@ -83,9 +82,6 @@ func main() {
 	defer env.Close()
 
 	go env.RunStenotype()
-        if conf.Rpc != nil {
-                go rpc.RunStenorpc(conf.Rpc)
-        }
 
 	env.ExportDebugHandlers(http.DefaultServeMux)
 	log.Fatal(env.Serve())
