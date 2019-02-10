@@ -1,5 +1,6 @@
-stenographer (0.0~git20161206.0.66a8e7e-11) unstable; urgency=medium
+stenographer (0.0~git20180422.0.73ce5dd-1) unstable; urgency=medium
 
+  * New upstream snapshot.
   * Make unit test more resilient:
     - Start stenographer with --seccomp=none to address potential
       crashes on debci VMs.
