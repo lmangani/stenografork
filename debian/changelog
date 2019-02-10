@@ -1,3 +1,11 @@
+stenographer (0.0~git20161206.0.66a8e7e-11) unstable; urgency=medium
+
+  * Make unit test more resilient:
+    - Start stenographer with --seccomp=none to address potential
+      crashes on debci VMs.
+
+ -- Sascha Steinbiss <satta@debian.org>  Sun, 10 Feb 2019 11:25:57 +0100
+
 stenographer (0.0~git20161206.0.66a8e7e-10) unstable; urgency=medium
 
   * Try to make unit test more robust:

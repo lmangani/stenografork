@@ -20,8 +20,10 @@ sed -i "s/\"Interface\": \"eth0\"/\"Interface\": \"$IFACE\"/g" /etc/stenographer
 # tweak settings to be more reasonable with memory for small test case
 sed -i 's/"Flags": \[\]/"Flags": ["--blocks=256"]/g' /etc/stenographer/config
 
+echo 'STENOGRAPHER_ARGS="--seccomp-none"' > /etc/default/stenographer
+
 # start stenographer
-systemctl start stenographer
+systemctl restart stenographer
 
 # show status
 systemctl status stenographer
