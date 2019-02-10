@@ -6,17 +6,17 @@ Subject: Make steno.conf usable for Debian pakcage
  configs/steno.conf | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/configs/steno.conf b/configs/steno.conf
-index 412217f..d0a2459 100644
 --- a/configs/steno.conf
 +++ b/configs/steno.conf
-@@ -1,11 +1,11 @@
+@@ -1,13 +1,13 @@
  {
    "Threads": [
 -    { "PacketsDirectory": "/path/to/thread0/packets/directory"
 -    , "IndexDirectory": "/path/to/thread0/index/directory"
 +    { "PacketsDirectory": "/var/lib/stenographer/thread0/packets"
 +    , "IndexDirectory": "/var/lib/stenographer/thread0/index"
+     , "MaxDirectoryFiles": 30000
+     , "DiskFreePercentage": 10
      }
    ]
 -  , "StenotypePath": "/usr/bin/stenotype"

@@ -11,11 +11,9 @@ for the duration of the test runs.
  thread/thread_test.go       |  7 +++++--
  3 files changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/blockfile/blockfile_test.go b/blockfile/blockfile_test.go
-index ff56fcb..3596fce 100644
 --- a/blockfile/blockfile_test.go
 +++ b/blockfile/blockfile_test.go
-@@ -28,7 +28,7 @@ import (
+@@ -28,7 +28,7 @@
  var ctx = context.Background()
  
  const (
@@ -24,11 +22,9 @@ index ff56fcb..3596fce 100644
  )
  
  func testBlockFile(t *testing.T, filename string) *BlockFile {
-diff --git a/indexfile/indexfile_test.go b/indexfile/indexfile_test.go
-index e27e2cf..bf635b8 100644
 --- a/indexfile/indexfile_test.go
 +++ b/indexfile/indexfile_test.go
-@@ -37,7 +37,7 @@ func testIndexFile(t *testing.T, filename string) *IndexFile {
+@@ -37,7 +37,7 @@
  }
  
  func TestIPPositions(t *testing.T) {
@@ -37,7 +33,7 @@ index e27e2cf..bf635b8 100644
  	defer idx.Close()
  	for _, test := range []struct {
  		start string
-@@ -56,7 +56,7 @@ func TestIPPositions(t *testing.T) {
+@@ -56,7 +56,7 @@
  }
  
  func TestMPLSPositions(t *testing.T) {
@@ -46,7 +42,7 @@ index e27e2cf..bf635b8 100644
  	defer idx.Close()
  	for _, test := range []struct {
  		label uint32
-@@ -74,7 +74,7 @@ func TestMPLSPositions(t *testing.T) {
+@@ -74,7 +74,7 @@
  }
  
  func TestVLANPositions(t *testing.T) {
@@ -55,7 +51,7 @@ index e27e2cf..bf635b8 100644
  	defer idx.Close()
  	for _, test := range []struct {
  		id   uint16
-@@ -92,7 +92,7 @@ func TestVLANPositions(t *testing.T) {
+@@ -92,7 +92,7 @@
  }
  
  func TestProtoPositions(t *testing.T) {
@@ -64,7 +60,7 @@ index e27e2cf..bf635b8 100644
  	defer idx.Close()
  	for _, test := range []struct {
  		proto byte
-@@ -110,7 +110,7 @@ func TestProtoPositions(t *testing.T) {
+@@ -110,7 +110,7 @@
  }
  
  func TestPortPositions(t *testing.T) {
@@ -73,7 +69,7 @@ index e27e2cf..bf635b8 100644
  	defer idx.Close()
  	for _, test := range []struct {
  		port uint16
-@@ -128,7 +128,7 @@ func TestPortPositions(t *testing.T) {
+@@ -128,7 +128,7 @@
  }
  
  func TestDump(t *testing.T) {
@@ -82,11 +78,9 @@ index e27e2cf..bf635b8 100644
  	want := "00\n0111\n013a\n"
  	var w bytes.Buffer
  	start, _ := hex.DecodeString("00")
-diff --git a/thread/thread_test.go b/thread/thread_test.go
-index b1c193e..a458f45 100644
 --- a/thread/thread_test.go
 +++ b/thread/thread_test.go
-@@ -32,8 +32,8 @@ const (
+@@ -32,8 +32,8 @@
  	baseDir       = "/threadtest/"
  	pktDir        = "/threadtest/pkt/"
  	idxDir        = "/threadtest/idx/"
@@ -97,7 +91,7 @@ index b1c193e..a458f45 100644
  )
  
  func createThreads(t *testing.T, tempDir string) []*Thread {
-@@ -104,6 +104,9 @@ func newRequestTest(t *testing.T, handle http.Handler) requestTest {
+@@ -104,6 +104,9 @@
  }
  
  func TestExportDebugHandlers(t *testing.T) {

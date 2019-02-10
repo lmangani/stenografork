@@ -6,44 +6,41 @@ Subject: Enable full hardening
  stenotype/Makefile | 14 +++++++-------
  1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/stenotype/Makefile b/stenotype/Makefile
-index 1f96db5..cee501f 100644
 --- a/stenotype/Makefile
 +++ b/stenotype/Makefile
-@@ -53,13 +53,13 @@ FUZZ_FILES=util index index_bin
+@@ -54,12 +54,12 @@
  SANITIZE=
  ifndef SANITIZE
- 	OBJECTS=$(foreach file,$(FILES),$(file)_gcc.o)
--	CFLAGS=$(SHARED_CFLAGS) $(GCC_CFLAGS)
--	LDFLAGS=$(SHARED_LDFLAGS) $(GCC_LDFLAGS)
-+	CFLAGS:=$(CFLAGS) $(SHARED_CFLAGS) $(GCC_CFLAGS)
-+	LDFLAGS:=$(LDFLAGS) $(SHARED_LDFLAGS) $(GCC_LDFLAGS)
- 	CC=$(GCC)
+ 	OBJECTS=$(foreach file,$(FILES),$(file)_opt.o)
+-	CFLAGS=$(SHARED_CFLAGS) $(OPT_CFLAGS)
+-	LDFLAGS=$(SHARED_LDFLAGS) $(OPT_LDFLAGS)
++	CFLAGS:=$(CFLAGS) $(SHARED_CFLAGS) $(OPT_CFLAGS)
++	LDFLAGS:=$(LDFLAGS) $(SHARED_LDFLAGS) $(OPT_LDFLAGS)
  else
- 	OBJECTS=$(foreach file,$(FILES),$(file)_$(SANITIZE)_clang.o)
--	CFLAGS=$(SHARED_CFLAGS) $(CLANG_CFLAGS) -fsanitize=$(SANITIZE)
--	LDFLAGS=$(SHARED_LDFLAGS) $(CLANG_LDFLAGS)
-+	CFLAGS:=$(CFLAGS) $(SHARED_CFLAGS) $(CLANG_CFLAGS) -fsanitize=$(SANITIZE)
-+	LDFLAGS:=$(LDFLAGS) $(SHARED_LDFLAGS) $(CLANG_LDFLAGS)
- 	CC=$(CLANG)
+ 	OBJECTS=$(foreach file,$(FILES),$(file)_$(SANITIZE)_dbg.o)
+-	CFLAGS=$(SHARED_CFLAGS) $(DBG_CFLAGS) -fsanitize=$(SANITIZE)
+-	LDFLAGS=$(SHARED_LDFLAGS) $(DBG_LDFLAGS)
++	CFLAGS:=$(CFLAGS) $(SHARED_CFLAGS) $(DBG_CFLAGS) -fsanitize=$(SANITIZE)
++	LDFLAGS:=$(LDFLAGS) $(SHARED_LDFLAGS) $(DBG_LDFLAGS)
+ 	CXX=clang++ # Force clang if we're sanitizing
  endif
  ifeq "$(SANITIZE)" "memory"
-@@ -77,15 +77,15 @@ clean:
+@@ -76,15 +76,15 @@
  
  # Generate g++ object files.
- %_gcc.o: %.cc $(DEPS)
--	$(GCC) $(CFLAGS) -c -o $@ $<
-+	$(GCC) $(CFLAGS) $(CPPFLAGS) $(SHARED_CFLAGS) -c -o $@ $<
+ %_opt.o: %.cc $(DEPS)
+-	$(CXX) $(CFLAGS) -c -o $@ $<
++	$(CXX) $(CFLAGS) $(CPPFLAGS) $(SHARED_CFLAGS) -c -o $@ $<
  
  # Generate clang object files.
- %_$(SANITIZE)_clang.o: %.cc $(DEPS)
--	$(CLANG) $(CFLAGS) -c -o $@ $<
-+	$(CLANG) $(CFLAGS) $(CPPFLAGS) $(SHARED_CFLAGS) -c -o $@ $<
+ %_$(SANITIZE)_dbg.o: %.cc $(DEPS)
+-	$(CXX) $(CFLAGS) -c -o $@ $<
++	$(CXX) $(CFLAGS) $(CPPFLAGS) $(SHARED_CFLAGS) -c -o $@ $<
  
  # Generate the stenotype binary itself.  You mostly want this :)
  stenotype: $(OBJECTS)
--	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
-+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
+-	$(CXX) $(CFLAGS) -o $@ $^ $(LDFLAGS)
++	$(CXX) $(CFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
  
  
  

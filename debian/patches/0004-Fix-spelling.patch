@@ -6,11 +6,9 @@ Subject: Fix spelling
  stenotype/stenotype.cc | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/stenotype/stenotype.cc b/stenotype/stenotype.cc
-index 1fbdd61..c5b182d 100644
 --- a/stenotype/stenotype.cc
 +++ b/stenotype/stenotype.cc
-@@ -235,7 +235,7 @@ void DropPrivileges() {
+@@ -250,7 +250,7 @@
      if (flag_gid == "") {
        flag_gid = "nogroup";
      }
@@ -19,7 +17,7 @@ index 1fbdd61..c5b182d 100644
                << flag_gid;
      auto group = getgrnam(flag_gid.c_str());
      CHECK(group != NULL) << "Unable to get info for group " << flag_gid;
-@@ -247,7 +247,7 @@ void DropPrivileges() {
+@@ -262,7 +262,7 @@
      if (flag_uid == "") {
        flag_uid = "nobody";
      }
