@@ -34,6 +34,15 @@ override_dh_auto_test:
 override_dh_auto_install:
 	dh_auto_install -- --no-source
 
+override_dh_installdocs:
+	dh_installdocs -pstenographer-common
+
+override_dh_installchangelogs:
+	dh_installchangelogs -pstenographer-common
+
+overide_dh_installexamples:
+	dh_installexamples -pstenographer-common
+
 override_dh_dwz:
 	# pass
 
