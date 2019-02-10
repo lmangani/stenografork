@@ -32,7 +32,10 @@ override_dh_auto_test:
 	rm -rf /tmp/stenographer-testdata
 
 override_dh_auto_install:
-	dh_auto_install
+	dh_auto_install -- --no-source
+
+override_dh_dwz:
+	# pass
 
 override_dh_auto_clean:
 	dh_auto_clean
@@ -43,12 +46,12 @@ override_dh_installman: $(MANPAGES)
 	dh_installman
 
 override_dh_install-arch:
-	dh_install --fail-missing -X/usr/share/gocode/src
+	dh_install -X/usr/share/gocode/src
 	mv debian/stenographer/usr/bin debian/stenographer/usr/sbin
 
 override_dh_install-indep:
 	cp stenokeys.sh stenokeys
-	dh_install --fail-missing -X/usr/share/gocode/src
+	dh_install -X/usr/share/gocode/src
 	install -D -m644 configs/steno.conf \
 		debian/stenographer-common/etc/stenographer/config
 	install -D -m644 configs/limits.conf \
