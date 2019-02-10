@@ -1,2 +1,0 @@
-# Having this installed is still useful for users
-stenographer-client: package-contains-upstream-install-documentation usr/share/doc/stenographer-client/INSTALL.md.gz

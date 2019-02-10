@@ -3,6 +3,7 @@ stenographer (0.0~git20180422.0.73ce5dd-1) unstable; urgency=medium
   * New upstream snapshot.
   * Use debhelper 12.
   * Bump Standards-Version.
+  * Remove obsolete lintian overrides and reword renamed ones.
   * Make unit test more resilient:
     - Start stenographer with --seccomp=none to address potential
       crashes on debci VMs.
