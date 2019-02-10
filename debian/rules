@@ -1,10 +1,10 @@
 #!/usr/bin/make -f
 
+include /usr/share/dpkg/pkg-info.mk
+
 #export DH_VERBOSE = 1
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
-UPSTREAM_VERSION=$(shell dpkg-parsechangelog -SVersion | cut -f2 -d~)
-TIMESTAMP=$(shell dpkg-parsechangelog -STimestamp)
-DATE=$(shell date --date=@$(TIMESTAMP) '+%d %B %Y')
+DATE=$(shell date --date=@$(SOURCE_DATE_EPOCH) '+%d %B %Y')
 
 MANPAGES=debian/man/stenocurl.1 \
          debian/man/stenoread.1 \
@@ -18,7 +18,7 @@ MANPAGES=debian/man/stenocurl.1 \
 %.1: %.1.txt
 	TZ=UTC LC_ALL=C \
 	  txt2man -d "$(DATE)" \
-	  -s 1 -r "stenographer $(UPSTREAM_VERSION)" \
+	  -s 1 -r "stenographer $(DEB_VERSION_UPSTREAM)" \
 	  -t $(shell basename -a -s.1 $@) \
 	  $< > $@
 
