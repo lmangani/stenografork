@@ -1,6 +1,7 @@
 stenographer (0.0~git20190528.0.6415e2b-1) unstable; urgency=medium
 
   * New upstream snapshot.
+  * Add new B-D on golang-google-grpc-dev and golang-github-google-uuid-dev.
 
  -- Sascha Steinbiss <satta@debian.org>  Fri, 16 Aug 2019 13:32:06 +0200
 
