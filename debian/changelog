@@ -1,3 +1,10 @@
+stenographer (0.0~git20190917.0.3545c54-1~bpo10+1) buster-backports; urgency=medium
+
+  * Rebuild for buster-backports.
+  * Make build-dependency requirements more specific for backports versions.
+
+ -- Sascha Steinbiss <satta@debian.org>  Wed, 22 Jan 2020 10:46:12 +0100
+
 stenographer (0.0~git20190917.0.3545c54-1) unstable; urgency=medium
 
   * New upstream snapshot.
