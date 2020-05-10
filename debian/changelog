@@ -1,6 +1,7 @@
 stenographer (0.0~git20200127.0.51c919c-1~bpo10+1) buster-backports; urgency=medium
 
   * Rebuild for buster-backports.
+  * Use backports version of Go as dependency.
 
  -- Sascha Steinbiss <satta@debian.org>  Sun, 10 May 2020 17:56:18 +0200
 
