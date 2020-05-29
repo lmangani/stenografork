@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Hilko Bengen <bengen@debian.org>
 Uploaders: Sascha Steinbiss <satta@debian.org>
-Build-Depends: debhelper-compat (= 12),
+Build-Depends: debhelper-compat (= 13),
  dh-golang,
  golang-go,
  golang-github-golang-leveldb-dev,
