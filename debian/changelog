@@ -1,3 +1,9 @@
+stenographer (0.0~git20200529.0.b049603-1) unstable; urgency=medium
+
+  * New upstream snapshot.
+
+ -- Sascha Steinbiss <satta@debian.org>  Fri, 29 May 2020 20:42:23 +0200
+
 stenographer (0.0~git20200127.0.51c919c-1) unstable; urgency=medium
 
   * New upstream snapshot.
