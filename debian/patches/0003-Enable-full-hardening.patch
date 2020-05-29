@@ -8,7 +8,7 @@ Subject: Enable full hardening
 
 --- a/stenotype/Makefile
 +++ b/stenotype/Makefile
-@@ -54,12 +54,12 @@
+@@ -56,12 +56,12 @@
  SANITIZE=
  ifndef SANITIZE
  	OBJECTS=$(foreach file,$(FILES),$(file)_opt.o)
@@ -25,7 +25,7 @@ Subject: Enable full hardening
  	CXX=clang++ # Force clang if we're sanitizing
  endif
  ifeq "$(SANITIZE)" "memory"
-@@ -76,15 +76,15 @@
+@@ -78,15 +78,15 @@
  
  # Generate g++ object files.
  %_opt.o: %.cc $(DEPS)

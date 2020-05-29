@@ -8,7 +8,7 @@ Subject: Fix spelling
 
 --- a/stenotype/stenotype.cc
 +++ b/stenotype/stenotype.cc
-@@ -250,7 +250,7 @@
+@@ -254,7 +254,7 @@
      if (flag_gid == "") {
        flag_gid = "nogroup";
      }
@@ -17,7 +17,7 @@ Subject: Fix spelling
                << flag_gid;
      auto group = getgrnam(flag_gid.c_str());
      CHECK(group != NULL) << "Unable to get info for group " << flag_gid;
-@@ -262,7 +262,7 @@
+@@ -266,7 +266,7 @@
      if (flag_uid == "") {
        flag_uid = "nobody";
      }
