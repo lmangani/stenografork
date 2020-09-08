@@ -1,6 +1,7 @@
-stenographer (0.0~git20200901.0.e8db1ee-1) unstable; urgency=medium
+stenographer (1.0.1-1) unstable; urgency=medium
 
   * New upstream snapshot.
+  * Add watchfile to track tagged upstream releases.
 
  -- Sascha Steinbiss <satta@debian.org>  Tue, 08 Sep 2020 23:39:44 +0200
 
