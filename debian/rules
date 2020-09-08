@@ -40,7 +40,7 @@ override_dh_installdocs:
 override_dh_installchangelogs:
 	dh_installchangelogs -pstenographer-common
 
-overide_dh_installexamples:
+override_dh_installexamples:
 	dh_installexamples -pstenographer-common
 
 override_dh_dwz:
