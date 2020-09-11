@@ -49,27 +49,28 @@ type ThreadConfig struct {
 
 // RpcConfig is a json-decoded configuration for running the gRPC server.
 type RpcConfig struct {
-        CaCert                  string
-        ServerKey               string
-        ServerCert              string
-        ServerPort              int
-        ServerPcapPath          string
-        ServerPcapMaxSize       int64
-        ClientPcapChunkSize     int64
-        ClientPcapMaxSize       int64
+	CaCert              string
+	ServerKey           string
+	ServerCert          string
+	ServerPort          int
+	ServerPcapPath      string
+	ServerPcapMaxSize   int64
+	ClientPcapChunkSize int64
+	ClientPcapMaxSize   int64
 }
 
 // Config is a json-decoded configuration for running stenographer.
 type Config struct {
-        Rpc           *RpcConfig
-	StenotypePath string
-	Threads       []ThreadConfig
-	Interface     string
-	Flags         []string
-	Port          int
-	Host          string // Location to listen.
-	CertPath      string // Directory where client and server certs are stored.
-	MaxOpenFiles  int    // Max number of file descriptors opened at once
+	Rpc             *RpcConfig
+	StenotypePath   string
+	Threads         []ThreadConfig
+	Interface       string
+	TestimonySocket string
+	Flags           []string
+	Port            int
+	Host            string // Location to listen.
+	CertPath        string // Directory where client and server certs are stored.
+	MaxOpenFiles    int    // Max number of file descriptors opened at once
 }
 
 // ReadConfigFile reads in the given JSON encoded configuration file and returns
@@ -108,6 +109,10 @@ func (c Config) Validate() error {
 		if thread.IndexDirectory == "" {
 			return fmt.Errorf("No index directory specified for thread %d in configuration", n)
 		}
+	}
+
+	if len(c.TestimonySocket) > 0 && len(c.Interface) > 0 {
+		return fmt.Errorf("Can't use both \"Interface\" and \"TestimonySocket\" options")
 	}
 
 	if host := net.ParseIP(c.Host); host == nil {

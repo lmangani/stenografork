@@ -1,3 +1,12 @@
+stenographer (1.0.1-1) unstable; urgency=medium
+
+  * New upstream snapshot.
+  * Add watchfile to track tagged upstream releases.
+  * Fix typo in dh_installexamples override.
+  * Update copyright dates in d/copyright.
+
+ -- Sascha Steinbiss <satta@debian.org>  Tue, 08 Sep 2020 23:39:44 +0200
+
 stenographer (0.0~git20200529.0.b049603-1~bpo10+1) buster-backports; urgency=medium
 
   * Rebuild for buster-backports.
