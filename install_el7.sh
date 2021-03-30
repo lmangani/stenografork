@@ -30,7 +30,7 @@ export PATH=${PATH}:/usr/local/go/bin
 
 # Load support functions
 _scriptDir="$(dirname `readlink -f $0`)"
-source lib.sh
+source ./lib.sh
 
 check_sudo () {
 	Info "Checking for sudo...  "
