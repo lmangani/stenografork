@@ -19,15 +19,19 @@ COPY --from=build /etc/stenographer /etc/stenographer
 COPY --from=build /stenographer/src/github.com/google/stenographer/stenotype/compile_bpf.sh /opt/stenographer/bin/
 COPY entrypoint.sh /opt/stenographer/bin/
 
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN adduser --system --no-create-home stenographer && \
     addgroup --system stenographer && \
     mkdir -p /var/lib/stenographer && \
     chown stenographer:stenographer /var/lib/stenographer && \
     apt update && \
     apt install -y --no-install-recommends libleveldb1v5 libsnappy1v5 libaio1 \
-    jq tcpdump libcap2-bin curl netcat-openbsd tshark nodejs sudo && \
+    jq tcpdump libcap2-bin curl netcat-openbsd tshark ca-certificates sudo && \
     setcap 'CAP_NET_RAW+ep CAP_NET_ADMIN+ep CAP_IPC_LOCK+ep' /opt/stenographer/bin/stenotype && \
     rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - && \
+    sudo apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/* && \
+    npm install -g stenoread
 
 ENTRYPOINT [ "/opt/stenographer/bin/entrypoint.sh" ]

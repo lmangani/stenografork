@@ -14,6 +14,6 @@ docker run \
   --cap-add IPC_LOCK \
   qxip/stenographer \
   --interface enp0s3 \
-  --indexbase /var/lib/stenograpapher/IDX \
-  --packetsbase /var/lib/stenographer/PKT
+  --indexbase /var/lib/stenograpapher/i \
+  --packetsbase /var/lib/stenographer/p
  ```

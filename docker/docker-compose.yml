@@ -1,0 +1,24 @@
+version: '2.1'
+
+volumes:
+    steno_data: {}
+
+services:
+  stenographer:
+    image: qxip/stenographer
+    container_name: stenographer
+    network_mode: "host"
+    volumes:
+      - steno_data:/var/lib/stenographer
+    command:
+      - '--interface=eth0'
+      - '--indexbase /var/lib/stenograpapher/i'
+      - '--packetsbase /var/lib/stenographer/p'
+    restart: unless-stopped
+    cap_add:
+       - NET_ADMIN
+       - IPC_LOCK  
+    expose:
+      - 1234
+    labels:
+      org.label-schema.group: "pcap"
