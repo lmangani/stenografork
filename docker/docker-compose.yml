@@ -5,15 +5,13 @@ volumes:
 
 services:
   stenographer:
-    image: qxip/stenographer
+    image: qxip/stenografork
     container_name: stenographer
     network_mode: "host"
     volumes:
       - steno_data:/var/lib/stenographer
-    command:
-      - '--interface=eth0'
-      - '--indexbase /var/lib/stenograpapher/i'
-      - '--packetsbase /var/lib/stenographer/p'
+    entrypoint: /usr/bin/entrypoint.sh
+    command: --interface enp4s0 --indexbase /var/lib/stenograpapher/i --packetsbase /var/lib/stenographer/p
     restart: unless-stopped
     cap_add:
        - NET_ADMIN

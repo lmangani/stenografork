@@ -93,7 +93,7 @@ create_config() {
     local COMPILED_FILTER=
 
     if [ -n "${FILTER}" ]; then
-        COMPILED_FILTER="$(/opt/stenographer/bin/compile_bpf.sh "${INTERFACE}" "${FILTER}")"
+        COMPILED_FILTER="$(/usr/bin/compile_bpf.sh "${INTERFACE}" "${FILTER}")"
         [ -n "${COMPILED_FILTER}" ]
     fi
 
@@ -105,11 +105,11 @@ create_config() {
         map({PacketsDirectory: "\($packetsbase)/\(.)",
             IndexDirectory: "\($indexbase)/\(.)",
             DiskFreePercentage: $diskfree}),
-    StenotypePath: "/opt/stenographer/bin/stenotype",
+    StenotypePath: "/usr/bin/stenotype",
     Interface: $interface,
     Host: $http_host,
     Port: $http_port,
-    Flags: ([ "--seccomp=none", "--uid=root", "--gid=root" ] + $extraflags),
+    Flags: ([ "--seccomp=none", "--uid=root", "--gid=root", "-vv" ] + $extraflags),
     CertPath: "/etc/stenographer/certs"
 }
 EOF
@@ -118,6 +118,10 @@ EOF
 
     if [ -n "${COMPILED_FILTER}" ]; then
         EXTRAFLAGS="[\"--filter=${COMPILED_FILTER}\"]"
+    fi
+
+    if [ -n "${BPF_FILTER}" ]; then
+        EXTRAFLAGS="[\"--bpf_filter=${BPF_FILTER}\"]"
     fi
 
     jq --null-input \
@@ -140,4 +144,4 @@ if [ -z "${HTTP_HOST}" ] || [ -z "${HTTP_PORT}" ] || [ -z "${INTERFACE}" ] || [ 
 fi
 
 create_config "${INTERFACE}" "${THREADS}" "${PACKETSBASE}" "${INDEXBASE}" "${DISKFREE}" "${FILTER}" "${HTTP_HOST}" "${HTTP_PORT}" >/etc/stenographer/config
-/opt/stenographer/bin/stenographer -syslog=false -config=/etc/stenographer/config
+/usr/bin/stenographer -syslog=false -config=/etc/stenographer/config
