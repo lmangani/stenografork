@@ -6,6 +6,7 @@ docker build -t qxip/stenographer .
 ```
 
 ## Usage
+### docker
 ```
 docker run \
   --net=host \
@@ -17,3 +18,7 @@ docker run \
   --indexbase /var/lib/stenograpapher/i \
   --packetsbase /var/lib/stenographer/p
  ```
+### docker-compose
+```
+docker-compose up -d
+```
