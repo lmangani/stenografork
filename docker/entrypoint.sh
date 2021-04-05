@@ -144,5 +144,7 @@ if [ -z "${HTTP_HOST}" ] || [ -z "${HTTP_PORT}" ] || [ -z "${INTERFACE}" ] || [ 
     usage
 fi
 
+[ -d /usr/lib/node_modules/stenoread ] && nohup npm start server --prefix /usr/lib/node_modules/stenoread/ &
+
 create_config "${INTERFACE}" "${THREADS}" "${PACKETSBASE}" "${INDEXBASE}" "${DISKFREE}" "${FILTER}" "${HTTP_HOST}" "${HTTP_PORT}" >/etc/stenographer/config
 /usr/bin/stenographer -syslog=false -config=/etc/stenographer/config

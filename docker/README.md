@@ -1,6 +1,12 @@
 # Stenographer Docker
 
-## Build
+This container provides `stenographer` and its tools in a convenient package.
+
+## Service Ports
+- 1234/TCP: `stenographer`
+- 1235/TCP: `stenoread.js`
+
+## Build Custom
 ```
 docker build -t qxip/stenographer .
 ```

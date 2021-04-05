@@ -24,7 +24,7 @@ RUN adduser --system --no-create-home stenographer && \
     chown stenographer:stenographer /var/lib/stenographer && \
     apt update && \
     apt install -y --no-install-recommends libleveldb1v5 libsnappy1v5 libaio1 \
-    jq tcpdump libcap2-bin curl netcat-openbsd tshark ca-certificates sudo && \
+    jq tcpdump libcap2-bin curl tshark ca-certificates sudo && \
     setcap 'CAP_NET_RAW+ep CAP_NET_ADMIN+ep CAP_IPC_LOCK+ep' /usr/bin/stenotype && \
     rm -rf /var/lib/apt/lists/*
 
