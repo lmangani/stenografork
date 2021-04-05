@@ -91,6 +91,7 @@ create_config() {
     local -r HTTP_HOST="$7"
     local -r HTTP_PORT="$8"
     local COMPILED_FILTER=
+    local BPF_FILTER=
 
     if [ -n "${FILTER}" ]; then
         COMPILED_FILTER="$(/usr/bin/compile_bpf.sh "${INTERFACE}" "${FILTER}")"
